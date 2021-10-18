@@ -1,32 +1,41 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
 import { hash } from 'bcrypt';
+import { Role } from './entities/role.enum';
+import { Users } from './entities/users.entity';
 
 @Injectable()
 export class UsersService {
     constructor(private repository: UsersRepository) {}
-    private data: CreateUserDto;
 
-    async save(request: CreateUserDto) {
-        try {
-            console.log(request);
+    async save(request: Partial<Users>, role: Role) {
+        const isDuplicatedEmail = await this.repository.findOne({
+            email: request.email,
+        });
 
-            const user = this.repository.create(request);
-            user.password = await hash(user.password, 6);
-            const persistedUser = await this.repository.save(user);
-            return persistedUser;
-        } catch (error) {
-            console.log(error);
-            const isDuplicatedEmail = error.driverError.sqlMessage;
-            console.log(isDuplicatedEmail);
-
-            if (isDuplicatedEmail) {
-                return isDuplicatedEmail;
-            }
-            return error;
+        if (isDuplicatedEmail) {
+            throw new BadRequestException('email already exists');
         }
+
+        const user = this.repository.create(request);
+        user.password = await hash(user.password, 6);
+        const persistedUser = await this.repository.save({
+            ...user,
+            roles: [role],
+        });
+        return persistedUser;
     }
+
+    async saveUser(request: CreateUserDto) {
+        const user = await this.save(request, Role.User);
+        return user;
+    }
+
     async showAll() {
         return this.repository.find();
     }
@@ -38,6 +47,7 @@ export class UsersService {
         }
         throw new NotFoundException();
     }
+
     async destroy(id: number) {
         const user = await this.repository.findOne(id);
         if (user) {
@@ -45,6 +55,7 @@ export class UsersService {
         }
         throw new NotFoundException();
     }
+
     async update(id: number, email: string, password: string) {
         let user = await this.repository.findOne(id);
         const updatedUser = { ...user };
@@ -58,7 +69,9 @@ export class UsersService {
         user = await this.repository.save(user);
         return user;
     }
-    // async verifyEmail(){
 
-    // }
+    async findByEmail(email: string) {
+        const user = await this.repository.findOne({ email });
+        return user;
+    }
 }

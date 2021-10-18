@@ -1,9 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
-
 export class CreateStreamerDto {
-    @IsNotEmpty()
+    id: number;
+
     email: string;
 
-    @IsNotEmpty()
     password: string;
+
+    pix: string;
+
+    agency: string;
+
+    account: string;
+
+    channel: string;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository, EntityRepository } from 'typeorm';
-import { Streamers } from './streamers.entity';
+import { Streamers } from './entities/streamers.entity';
 
 @Injectable()
 @EntityRepository(Streamers)
