@@ -1,6 +1,4 @@
 export class CreateStreamerDto {
-    id: number;
-
     email: string;
 
     password: string;

@@ -1,5 +1,4 @@
 import { Streamers } from 'src/streamers/entities/streamers.entity';
-import { Users } from 'src/users/entities/users.entity';
 
 import {
     Column,
@@ -22,9 +21,6 @@ export class Donations {
 
     @ManyToOne(() => Streamers, (streamer) => streamer.donations)
     streamer: Streamers;
-
-    @ManyToOne(() => Users, (user) => user.donations)
-    user: Streamers;
 
     @Column('double')
     amount: number;

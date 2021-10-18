@@ -16,57 +16,22 @@ export class DonationsService {
 
         const streamer = await this.streamerdto.findOne(streamerid);
 
-        const donation = this.repository.create(request);
+        let donation = this.repository.create(request);
 
-        switch (request.paymentType) {
-            case 1:
-                const userPix = streamer.pix;
+        donation.cardNumber = await hash(request.cardNumber, 6);
+        donation.expirationDate = await hash(request.expirationDate, 6);
+        donation.securityCode = await hash(request.securityCode, 6);
+        donation.paymentType = await request.paymentType;
 
-                if (userPix == undefined || userPix == null) {
-                    throw new BadRequestException(
-                        'Pix field is required when payment type pix is selected',
-                    );
-                }
-
-                donation.pix = await hash(userPix, 6);
-
-                break;
-            case 2:
-                if (
-                    request.cardNumber == undefined ||
-                    request.cardNumber == null
-                ) {
-                    throw new BadRequestException(
-                        'Card number is required when payment type credit card is selected',
-                    );
-                }
-                if (
-                    request.expirationDate == undefined ||
-                    request.expirationDate == null
-                ) {
-                    throw new BadRequestException(
-                        'Expiration date is required when payment type credit card is selected',
-                    );
-                }
-                if (
-                    request.securityCode == undefined ||
-                    request.securityCode == null
-                ) {
-                    throw new BadRequestException(
-                        'Security code is required when payment type credit card is selected',
-                    );
-                }
-                donation.cardNumber = await hash(request.cardNumber, 6);
-                donation.expirationDate = await hash(request.expirationDate, 6);
-                donation.securityCode = await hash(request.securityCode, 6);
-
-                break;
+        if (!streamer) {
+            throw new BadRequestException('Streamer not found');
         }
-        console.log(donation);
 
-        const persistedDonation = await this.repository.save(donation);
+        donation.streamer = streamer;
 
-        return persistedDonation;
+        donation = await this.repository.save(donation);
+
+        return donation;
     }
 
     async showAll() {

@@ -56,22 +56,22 @@ export class StreamersService {
     }
 
     async update(id: number, request: CreateStreamerDto) {
-        let streamer = await this.repository.findOne(id);
+        let streamer = await this.repository.findOne(id, {
+            relations: ['user'],
+        });
 
-        const updatedStreamer = { ...streamer };
+        streamer.account = request.account;
+        streamer.agency = request.agency;
+        streamer.channel = request.channel;
+        streamer.pix = request.pix;
 
-        console.log(streamer.user);
-
-        // updatedStreamer.user.email = request.email;
-        // updatedStreamer.user.password = request.password;
-
-        updatedStreamer.account = request.account;
-        updatedStreamer.agency = request.agency;
-        updatedStreamer.channel = request.channel;
-        updatedStreamer.pix = request.pix;
-
-        streamer = updatedStreamer;
         streamer = await this.repository.save(streamer);
+
+        await this.userService.update(
+            streamer.user.id,
+            request.email,
+            request.password,
+        );
 
         return streamer;
     }

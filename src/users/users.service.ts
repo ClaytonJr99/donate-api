@@ -58,15 +58,13 @@ export class UsersService {
 
     async update(id: number, email: string, password: string) {
         let user = await this.repository.findOne(id);
-        const updatedUser = { ...user };
-        if (email) {
-            updatedUser.email = email;
-        }
-        if (password) {
-            updatedUser.password = await hash(password, 6);
-        }
-        user = updatedUser;
+
+        user.email = email;
+
+        user.password = await hash(password, 6);
+
         user = await this.repository.save(user);
+
         return user;
     }
 
