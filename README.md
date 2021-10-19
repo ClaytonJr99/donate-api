@@ -45,8 +45,7 @@ $ yarn start
 $ yarn start:dev
 ```
 ## Rotas
-```
     - Com a aplicação rodando você pode criar um usuario ou streamer e utilizar o e-mail e senha na rota de autenticação para gerar o token de autenticação 
     - Ao acessar uma rota é necessário passar o token de autenticação na propriedade Bearer
     - Com todos os passos concluidos já é possivel realizar requisições em todas as rotas da API
-```
+
