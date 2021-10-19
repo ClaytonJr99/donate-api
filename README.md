@@ -46,23 +46,23 @@ $ yarn start:dev
 ```
 ## Rotas
 http://localhost:3000/api/v1/sua_rota
-
+<br />
 -Rota para login(rota publica)
 POST /api/v1/signIn
 O token de autenticação deve ser enviado no header Authorization no formato Bearer token
 Retorna um token JWT que pode ser usado nas demais rotas para a autenticação
-
+<br />
 - Rota para cadastrar usuario /api/v1/users essa é uma rota publica
 - Rota para listar usuarios /api/v1/users essa rota só pode ser chamada por usuários autenticados
 - Rota para listar um usuario /api/v1/users essa rota só pode ser chamada por usuários autenticados
 - Rota para deletar usuario /api/v1/users essa rota só pode ser chamada pelo próprio usuário autenticado
 - Rota para alterar usuario /api/v1/users essa rota só pode ser chamada pelo próprio usuário autenticado
-
+<br />
 - Rota para cadastrar streamer /api/v1/streamers essa é uma rota publica
 - Rota para listar streamers /api/v1/streamers essa é uma rota publica
 - Rota para listar um streamer /api/v1/streamers essa rota só pode ser chamada por streamers autenticados
 - Rota para deletar streamer /api/v1/streamers essa rota só pode ser chamada pelo próprio streamers autenticado
 - Rota para alterar streamer /api/v1/streamers essa rota só pode ser chamada pelo próprio streamers autenticado
-
+<br />
 - Rota para cadastrar doação /api/v1/donations essa rota só pode ser chamada por usuários autenticados
 - Rota para listar doações /api/v1/donations essa rota só pode ser chamada por streamers autenticados
