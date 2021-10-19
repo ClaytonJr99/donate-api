@@ -3,6 +3,7 @@ import { CreateDonationDto } from './dto/create-donation.dto';
 import { DonationsRepository } from './donations.repository';
 import { StreamersRepository } from 'src/streamers/streamers.repository';
 import { hash } from 'bcrypt';
+import { PaymentType } from './entities/donations.entity';
 
 @Injectable()
 export class DonationsService {
@@ -18,10 +19,15 @@ export class DonationsService {
 
         let donation = this.repository.create(request);
 
-        donation.cardNumber = await hash(request.cardNumber, 6);
-        donation.expirationDate = await hash(request.expirationDate, 6);
-        donation.securityCode = await hash(request.securityCode, 6);
-        donation.paymentType = await request.paymentType;
+        if (request.paymentType == PaymentType.CREDIT_CARD) {
+            donation.cardNumber = await hash(request.cardNumber, 6);
+            donation.expirationDate = await hash(request.expirationDate, 6);
+            donation.securityCode = await hash(request.securityCode, 6);
+        } else {
+            donation.pix = await hash(request.pix, 6);
+        }
+
+        donation.paymentType = request.paymentType;
 
         if (!streamer) {
             throw new BadRequestException('Streamer not found');

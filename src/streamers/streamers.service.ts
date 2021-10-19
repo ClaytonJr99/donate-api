@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { CreateStreamerDto } from './dto/create-streamer.dto';
 import { StreamersRepository } from './streamers.repository';
 import { UsersService } from 'src/users/users.service';
@@ -47,18 +51,32 @@ export class StreamersService {
         throw new NotFoundException();
     }
 
-    async destroy(id: number) {
-        const streamer = await this.repository.findOne(id);
+    async destroy(id: number, userAuthId: number) {
+        const streamer = await this.repository.findOne(id, {
+            relations: ['user'],
+        });
+
+        if (streamer.user.id !== userAuthId) {
+            throw new ForbiddenException();
+        }
+
         if (streamer) {
             return this.repository.remove(streamer);
         }
         throw new NotFoundException();
     }
 
-    async update(id: number, request: CreateStreamerDto) {
+    async update(id: number, request: CreateStreamerDto, userAuthId: number) {
         let streamer = await this.repository.findOne(id, {
             relations: ['user'],
         });
+        if (!streamer) {
+            throw new NotFoundException();
+        }
+
+        if (streamer.user.id !== userAuthId) {
+            throw new ForbiddenException();
+        }
 
         streamer.account = request.account;
         streamer.agency = request.agency;
@@ -67,11 +85,7 @@ export class StreamersService {
 
         streamer = await this.repository.save(streamer);
 
-        await this.userService.update(
-            streamer.user.id,
-            request.email,
-            request.password,
-        );
+        await this.userService.update(streamer.user.id, request, userAuthId);
 
         return streamer;
     }

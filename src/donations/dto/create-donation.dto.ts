@@ -1,8 +1,8 @@
-import { IsNotEmpty, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsNumber, ValidateIf } from 'class-validator';
 import { PaymentType } from '../entities/donations.entity';
 
 export class CreateDonationDto {
-    @IsNotEmpty()
+    @IsNumber()
     amount: number;
 
     @ValidateIf((type) => type.paymentType == PaymentType.CREDIT_CARD)

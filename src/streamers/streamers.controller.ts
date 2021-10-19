@@ -6,6 +6,7 @@ import {
     Param,
     Delete,
     Put,
+    Request,
 } from '@nestjs/common';
 import { Public, Roles } from 'src/auth/constants';
 import { Role } from 'src/users/entities/role.enum';
@@ -36,11 +37,16 @@ export class StreamersController {
 
     @Roles(Role.Streamer)
     @Delete(':id')
-    destroy(@Param('id') streamerId: number) {
-        return this.service.destroy(streamerId);
+    destroy(@Param('id') streamerId: number, @Request() request) {
+        return this.service.destroy(+streamerId, +request.user.id);
     }
+    @Roles(Role.Streamer)
     @Put(':id')
-    update(@Param('id') streamerId: number, @Body() body: CreateStreamerDto) {
-        return this.service.update(streamerId, body);
+    update(
+        @Param('id') streamerId: number,
+        @Body() body: CreateStreamerDto,
+        @Request() request,
+    ) {
+        return this.service.update(+streamerId, body, +request.user.id);
     }
 }

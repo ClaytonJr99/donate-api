@@ -1,5 +1,6 @@
 import {
     BadRequestException,
+    ForbiddenException,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
@@ -48,7 +49,11 @@ export class UsersService {
         throw new NotFoundException();
     }
 
-    async destroy(id: number) {
+    async destroy(id: number, userAuthId: number) {
+        if (id !== userAuthId) {
+            throw new ForbiddenException();
+        }
+
         const user = await this.repository.findOne(id);
         if (user) {
             return this.repository.remove(user);
@@ -56,12 +61,20 @@ export class UsersService {
         throw new NotFoundException();
     }
 
-    async update(id: number, email: string, password: string) {
+    async update(id: number, request: CreateUserDto, userAuthId: number) {
+        if (id !== userAuthId) {
+            throw new ForbiddenException();
+        }
+
         let user = await this.repository.findOne(id);
 
-        user.email = email;
+        if (!user) {
+            throw new NotFoundException();
+        }
 
-        user.password = await hash(password, 6);
+        user.email = request.email;
+
+        user.password = await hash(request.password, 6);
 
         user = await this.repository.save(user);
 
