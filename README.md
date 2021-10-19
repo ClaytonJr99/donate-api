@@ -35,9 +35,18 @@ $ yarn install
 ## Rodando a aplicação
 
 ```bash
+
+Para rodar a apliação, é necessário subir um container do docker com o comando docker-compose up -d
+
 # development
 $ yarn start
 
 # watch mode
 $ yarn start:dev
+```
+## Rotas
+```bash
+    - Com a aplicação rodando você pode criar um usuario ou streamer e utilizar o e-mail e senha na rota de autenticação para gerar o token de autenticação 
+    - Ao acessar uma rota é necessário passar o token de autenticação na propriedade Bearer
+    - Com todos os passos concluidos já é possivel realizar requisições em todas as rotas da API
 ```
