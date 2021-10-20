@@ -37,6 +37,7 @@ $ yarn install
 ```bash
 
 Para rodar a apliação, é necessário subir um container do docker com o comando docker-compose up -d
+É necessário acessar a rota http://localhost:8080/ do Adminer e criar o banco de dados por lá 
 
 # development
 $ yarn start
@@ -50,8 +51,9 @@ http://localhost:3000/api/v1/sua_rota
 
 -Rota para login(rota publica)
 POST /api/v1/signIn
+Antes de realizar o login é necessário criar um usuario ou streamer e utilizar seu email e senha na rota /api/v1/signIn para gerar o token de autenticação
+Essa rota retorna um token JWT que pode ser usado nas demais rotas para a autenticação
 O token de autenticação deve ser enviado no header Authorization no formato Bearer token
-Retorna um token JWT que pode ser usado nas demais rotas para a autenticação
 
 - Rota para cadastrar usuario /api/v1/users essa é uma rota publica
 - Rota para listar usuarios /api/v1/users essa rota só pode ser chamada por usuários autenticados
